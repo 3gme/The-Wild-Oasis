@@ -10,7 +10,7 @@ import Textarea from "../../ui/Textarea";
 import FormRow from "../../ui/FormRow";
 import { createCabin } from "../../services/apiCabins";
 
-function CreateCabinForm({ cabinToEdit }) {
+function CreateCabinForm() {
   // react-hook-form
   // register: to handle the states of the input and to set some validation and errors
   // handleSubmit: we call it in the onSubmit of the form and it takes two parameteres

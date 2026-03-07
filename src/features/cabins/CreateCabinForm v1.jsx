@@ -1,6 +1,4 @@
-import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
@@ -8,45 +6,33 @@ import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import FormRow from "../../ui/FormRow";
-import { createCabin } from "../../services/apiCabins";
 
-function CreateCabinForm({ cabinToEdit }) {
-  // react-hook-form
-  // register: to handle the states of the input and to set some validation and errors
-  // handleSubmit: we call it in the onSubmit of the form and it takes two parameteres
-  //  1- onSubmit: and in this function we can accept an argument (data) that have the data of the form
-  //  2- onError: this function can accept an argument (erros) that contains the erros from the validation from the register
-  const { register, handleSubmit, reset, getValues, formState } = useForm();
+import { useCreateCabin } from "./useCreateCabin";
+import { useUpdateCabin } from "./useUpdateCabin";
+
+function CreateCabinForm({ cabinToEdit = {} }) {
+  const { isCreating, createCabin } = useCreateCabin();
+  const { isUpdating, updateCabin } = useUpdateCabin();
+
+  const { id: editId, ...editValues } = cabinToEdit;
+  const isToEdit = Boolean(editId);
+
+  const { register, handleSubmit, reset, getValues, formState } = useForm({
+    defaultValues: isToEdit ? editValues : {},
+  });
   const { errors } = formState;
 
-  // -------------------------------------------
-  // react-query
-  // first--> here we want to upload some data to the database so we use useMutation() hook for this
-  //
-  // this takes an object contains alot of attributes the most important is
-  //  mutationFn: ....., this takes the function that make the changes
-  //  onSucces: ....., what to do if the changes are done correctly
-  //  onError: ....., what to do if some error happend and this take a call back function with and error parameter that have the specific error happend
-  //
-  const queryClint = useQueryClient();
-  const { mutate, isPending } = useMutation({
-    mutationFn: (newCabin) => createCabin(newCabin),
+  const isWorking = isCreating || isUpdating;
 
-    onSuccess: () => {
-      toast.success("New cabin successfully created");
-      queryClint.invalidateQueries({ queryKey: ["cabins"] });
-      reset();
-    },
-
-    onError: (err) => {
-      toast.error(err.message);
-    },
-  });
-
-  // arguments of the handleSubmit of the form
   function onSubmit(data) {
-    // Note: images are sent as fileList so we chose the first element as it's out image
-    mutate({ ...data, image: data.image[0] });
+    const image = typeof data.image === "string" ? data.image : data.image[0];
+
+    if (isToEdit)
+      updateCabin(
+        { newCabinData: { ...data, image: image }, id: editId },
+        { onSuccess: () => reset() },
+      );
+    else createCabin({ ...data, image: image }, { onSuccess: () => reset() });
   }
   function onError(errors) {
     // console.log(errors);
@@ -58,7 +44,7 @@ function CreateCabinForm({ cabinToEdit }) {
         <Input
           type="text"
           id="name"
-          disabled={isPending}
+          disabled={isWorking}
           {...register("name", {
             required: "This field is requird",
           })}
@@ -69,7 +55,7 @@ function CreateCabinForm({ cabinToEdit }) {
         <Input
           type="number"
           id="maxCapacity"
-          disabled={isPending}
+          disabled={isWorking}
           {...register("maxCapacity", {
             required: "This field is requird",
             min: {
@@ -84,7 +70,7 @@ function CreateCabinForm({ cabinToEdit }) {
         <Input
           type="number"
           id="regularPrice"
-          disabled={isPending}
+          disabled={isWorking}
           {...register("regularPrice", {
             required: "This field is requird",
             min: {
@@ -99,7 +85,7 @@ function CreateCabinForm({ cabinToEdit }) {
         <Input
           type="number"
           id="discount"
-          disabled={isPending}
+          disabled={isWorking}
           defaultValue={0}
           {...register("discount", {
             required: "This field is requird",
@@ -121,7 +107,7 @@ function CreateCabinForm({ cabinToEdit }) {
           type="number"
           id="description"
           defaultValue=""
-          disabled={isPending}
+          disabled={isWorking}
           {...register("description", { required: "This field is requird" })}
         />
       </FormRow>
@@ -130,18 +116,20 @@ function CreateCabinForm({ cabinToEdit }) {
         <FileInput
           id="image"
           accept="image/*"
-          disabled={isPending}
+          disabled={isWorking}
           {...register("image", {
-            required: "This field is requird",
+            required: isToEdit ? false : "This field is requird",
           })}
         />
       </FormRow>
 
       <FormRow>
-        <Button variations="secondary" type="reset" disabled={isPending}>
+        <Button variations="secondary" type="reset" disabled={isWorking}>
           Cancel
         </Button>
-        <Button disabled={isPending}>Edit cabin</Button>
+        <Button disabled={isWorking}>
+          {isToEdit ? "Edit cabin" : "Create new cabin"}
+        </Button>
       </FormRow>
     </Form>
   );
