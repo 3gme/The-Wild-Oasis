@@ -1,13 +1,18 @@
+import toast from "react-hot-toast";
 import supabase from "./supabase";
 
 export async function getSettings() {
-  const { data, error } = await supabase.from("settings").select("*").single();
+  let { data: settings, error } = await supabase
+    .from("settings")
+    .select("*")
+    .single();
 
   if (error) {
-    console.error(error);
-    throw new Error("Settings could not be loaded");
+    toast.error("Settings can't be downloaded");
+    throw new Error(error.message);
   }
-  return data;
+
+  return settings;
 }
 
 // We expect a newSetting object that looks like {setting: newValue}
@@ -23,5 +28,6 @@ export async function updateSetting(newSetting) {
     console.error(error);
     throw new Error("Settings could not be updated");
   }
+
   return data;
 }
