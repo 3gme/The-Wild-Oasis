@@ -4,12 +4,9 @@ import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 import Spinner from "../../ui/Spinner";
 import { useSettings } from "./useSettings";
-import Button from "../../ui/Button";
 import { useUpdateSettings } from "./useUpdateSettings";
 
 function UpdateSettingsForm() {
-  const { register, handleSubmit } = useForm();
-
   const {
     settings: {
       breakfastPrice,

@@ -1,13 +1,11 @@
 import styled from "styled-components";
-import { HiMiniSquare2Stack, HiPencil, HiTrash } from "react-icons/hi2";
-import { HiX } from "react-icons/hi";
+import { HiMiniSquare2Stack, HiTrash } from "react-icons/hi2";
 
 import { formatCurrency } from "../../utils/helpers";
 import { useDeleteCabin } from "./useDeleteCabin";
-import { useState } from "react";
 
-import CreateCabinForm from "./CreateCabinForm v1";
 import { useCreateCabin } from "./useCreateCabin";
+import EditCabin from "./EditCabin";
 
 const TableRow = styled.div`
   display: grid;
@@ -49,7 +47,7 @@ const Discount = styled.div`
 `;
 
 function CabinRow({ cabin }) {
-  const [showToEdit, setShowToEdit] = useState(false);
+  // const [showToEdit, setShowToEdit] = useState(false);
   const { isDeleting, deleteCabin } = useDeleteCabin();
   const { isCreating, createCabin } = useCreateCabin();
 
@@ -75,32 +73,35 @@ function CabinRow({ cabin }) {
   }
 
   return (
-    <>
-      <TableRow role="row">
-        <Img src={image} />
-        <Cabin>{name}</Cabin>
-        <div>Fits up to {maxCapacity}</div>
-        <Price>{formatCurrency(regularPrice)}</Price>
-        {discount ? (
-          <Discount>{formatCurrency(discount)}</Discount>
-        ) : (
-          <span>&mdash; </span>
-        )}
-        <div className="">
-          <button onClick={handleDuplicate} disabled={isWorking}>
-            <HiMiniSquare2Stack />
-          </button>
-          <button onClick={() => setShowToEdit((s) => !s)} disabled={isWorking}>
+    <TableRow role="row">
+      <Img src={image} />
+      <Cabin>{name}</Cabin>
+      <div>Fits up to {maxCapacity}</div>
+      <Price>{formatCurrency(regularPrice)}</Price>
+      {discount ? (
+        <Discount>{formatCurrency(discount)}</Discount>
+      ) : (
+        <span>&mdash; </span>
+      )}
+      <div className="">
+        <button onClick={handleDuplicate} disabled={isWorking}>
+          <HiMiniSquare2Stack />
+        </button>
+        {/* <button onClick={() => setShowToEdit((s) => !s)} disabled={isWorking}>
             {showToEdit ? <HiX /> : <HiPencil />}
-          </button>
-          <button onClick={() => deleteCabin(cabinId)} disabled={isWorking}>
-            <HiTrash />
-          </button>
-        </div>
-      </TableRow>
+          </button> */}
+        <EditCabin cabin={cabin} />
+        <button onClick={() => deleteCabin(cabinId)} disabled={isWorking}>
+          <HiTrash />
+        </button>
+      </div>
+    </TableRow>
 
-      {showToEdit && <CreateCabinForm cabinToEdit={cabin} />}
-    </>
+    // {/* {showToEdit && (
+    //   <Modal onClose={setShowToEdit}>
+    //     <CreateCabinForm cabinToEdit={cabin} onCloseModal={setShowToEdit} />
+    //   </Modal>
+    // )} */}
   );
 }
 
