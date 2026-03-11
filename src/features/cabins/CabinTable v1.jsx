@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { getCabins } from "../../services/apiCabins";
 import Spinner from "../../ui/Spinner";
 import CabinRow from "./CabinRow";
+import { useSearchParams } from "react-router-dom";
 
 const Table = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -33,6 +34,9 @@ function CabinTable() {
     queryKey: ["cabins"],
     queryFn: getCabins,
   });
+  const [searchParams] = useSearchParams();
+  const filterValue = searchParams.get("discount");
+  console.log(filterValue);
 
   if (isLoading) return <Spinner />;
   return (

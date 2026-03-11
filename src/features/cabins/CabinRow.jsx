@@ -1,11 +1,12 @@
 import styled from "styled-components";
-import { HiMiniSquare2Stack, HiTrash } from "react-icons/hi2";
+import { HiMiniSquare2Stack } from "react-icons/hi2";
 
 import { formatCurrency } from "../../utils/helpers";
-import { useDeleteCabin } from "./useDeleteCabin";
 
 import { useCreateCabin } from "./useCreateCabin";
 import EditCabin from "./EditCabin";
+import DeletCabin from "./DeletCabin";
+import Table from "../../ui/Table";
 
 const TableRow = styled.div`
   display: grid;
@@ -48,10 +49,9 @@ const Discount = styled.div`
 
 function CabinRow({ cabin }) {
   // const [showToEdit, setShowToEdit] = useState(false);
-  const { isDeleting, deleteCabin } = useDeleteCabin();
   const { isCreating, createCabin } = useCreateCabin();
 
-  const isWorking = isCreating || isDeleting;
+  const isWorking = isCreating;
 
   const {
     name,
@@ -73,7 +73,7 @@ function CabinRow({ cabin }) {
   }
 
   return (
-    <TableRow role="row">
+    <Table.Row role="row">
       <Img src={image} />
       <Cabin>{name}</Cabin>
       <div>Fits up to {maxCapacity}</div>
@@ -91,11 +91,13 @@ function CabinRow({ cabin }) {
             {showToEdit ? <HiX /> : <HiPencil />}
           </button> */}
         <EditCabin cabin={cabin} />
-        <button onClick={() => deleteCabin(cabinId)} disabled={isWorking}>
+        <DeletCabin cabinId={cabinId} />
+
+        {/* <button onClick={() => deleteCabin(cabinId)} disabled={isWorking}>
           <HiTrash />
-        </button>
+        </button> */}
       </div>
-    </TableRow>
+    </Table.Row>
 
     // {/* {showToEdit && (
     //   <Modal onClose={setShowToEdit}>

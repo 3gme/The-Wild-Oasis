@@ -1,7 +1,15 @@
-import { cloneElement, createContext, useContext, useState } from "react";
+import {
+  cloneElement,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
+import useClickOutside from "../hooks/useClickOutside";
 
 const StyledModal = styled.div`
   position: fixed;
@@ -79,12 +87,14 @@ function Button({ forName, children }) {
 
 function Window({ children, name }) {
   const { close, windowName } = useContext(ModalProvider);
-  console.log("from windoe: ", name, windowName);
-  if (windowName !== name) return;
+  const modalRef = useRef();
 
+  useClickOutside(modalRef, close);
+
+  if (windowName !== name) return;
   return createPortal(
     <Overlay>
-      <StyledModal>
+      <StyledModal ref={modalRef}>
         <StyledButton onClick={close}>
           <HiXMark />
         </StyledButton>
