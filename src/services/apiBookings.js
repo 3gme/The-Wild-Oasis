@@ -1,5 +1,22 @@
+import toast from "react-hot-toast";
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
+
+export async function getAllBookings() {
+  let { data: bookings, error } = await supabase
+    .from("bookings")
+    .select(
+      "id, created_at, startDate, endDate, numNights, numGuests, status, totalPrice, cabins(name), guests(fullName, email)",
+    );
+
+  if (error) {
+    toast.error("Bookings can't be Read From DB");
+    throw new Error(error.message);
+  }
+
+  console.log(bookings);
+  return bookings;
+}
 
 export async function getBooking(id) {
   const { data, error } = await supabase
@@ -55,7 +72,7 @@ export async function getStaysTodayActivity() {
     .from("bookings")
     .select("*, guests(fullName, nationality, countryFlag)")
     .or(
-      `and(status.eq.unconfirmed,startDate.eq.${getToday()}),and(status.eq.checked-in,endDate.eq.${getToday()})`
+      `and(status.eq.unconfirmed,startDate.eq.${getToday()}),and(status.eq.checked-in,endDate.eq.${getToday()})`,
     )
     .order("created_at");
 
