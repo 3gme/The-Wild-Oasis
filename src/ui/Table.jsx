@@ -87,5 +87,6 @@ function Row({ children }) {
 Table.Body = Body;
 Table.Header = Header;
 Table.Row = Row;
+Table.Footer = Footer;
 
 export default Table;

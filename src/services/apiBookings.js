@@ -2,20 +2,58 @@ import toast from "react-hot-toast";
 import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
-export async function getAllBookings() {
-  let { data: bookings, error } = await supabase
+const PAGE_SIZE = 10;
+
+export async function getAllBookings({ filter, sortBy, pageIndex }) {
+  let query = supabase
     .from("bookings")
     .select(
       "id, created_at, startDate, endDate, numNights, numGuests, status, totalPrice, cabins(name), guests(fullName, email)",
+      { count: "exact" },
     );
+
+  if (filter) query = query[filter.op](filter.field, filter.value);
+
+  if (sortBy)
+    query = query.order(sortBy.field, {
+      ascending: sortBy.direction === "asc",
+    });
+
+  // page
+  const start = (pageIndex - 1) * PAGE_SIZE;
+  const end = pageIndex * PAGE_SIZE;
+  query = query.range(start, end - 1);
+
+  const { data: bookings, error, count } = await query;
 
   if (error) {
     toast.error("Bookings can't be Read From DB");
     throw new Error(error.message);
   }
 
-  console.log(bookings);
-  return bookings;
+  return { bookings, count };
+}
+
+export async function getBookingsCount({ filter, sortBy }) {
+  let query = supabase
+    .from("bookings")
+    .select("*", { count: "exact", head: true });
+
+  if (filter) query = query[filter.op](filter.field, filter.value);
+
+  if (sortBy)
+    query = query.order(sortBy.field, {
+      ascending: sortBy.direction === "asc",
+    });
+
+  const { count, error } = await query;
+
+  if (error) {
+    console.error(error.message);
+    toast.error("count of bookings can't be reached");
+  }
+
+  return count;
 }
 
 export async function getBooking(id) {
