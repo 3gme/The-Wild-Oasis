@@ -1,8 +1,8 @@
 import toast from "react-hot-toast";
-import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
-const PAGE_SIZE = 10;
+import { getToday } from "../utils/helpers";
+import PAGE_SIZE from "../utils/constants";
 
 export async function getAllBookings({ filter, sortBy, pageIndex }) {
   let query = supabase
