@@ -2,7 +2,7 @@ import toast from "react-hot-toast";
 import supabase from "./supabase";
 
 import { getToday } from "../utils/helpers";
-import PAGE_SIZE from "../utils/constants";
+import { PAGE_SIZE } from "../utils/constants";
 
 export async function getAllBookings({ filter, sortBy, pageIndex }) {
   let query = supabase
@@ -67,7 +67,6 @@ export async function getBooking(id) {
     console.error(error);
     throw new Error("Booking not found");
   }
-
   return data;
 }
 
