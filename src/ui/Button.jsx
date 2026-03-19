@@ -49,6 +49,10 @@ const variations = {
 };
 
 const Button = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
   border: none;
   border-radius: var(--border-radius-sm);
   box-shadow: var(--shadow-sm);

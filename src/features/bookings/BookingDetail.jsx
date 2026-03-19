@@ -70,7 +70,8 @@ function BookingDetail({ onCloseModal }) {
         <Modal>
           <Modal.Button forName={"delete"}>
             <Button variations="danger">
-              <HiTrash /> Delete
+              <HiTrash />
+              Delete
             </Button>
           </Modal.Button>
           <Modal.Window name={"delete"}>

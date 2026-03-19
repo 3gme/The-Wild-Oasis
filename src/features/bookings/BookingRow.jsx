@@ -118,7 +118,7 @@ function BookingRow({
 
           <Menus.Button
             icon={<HiArrowUpOnSquare />}
-            onClick={() => deleteBooking(bookingId)}
+            onClick={() => navigate(`/bookings/${bookingId}`)}
           >
             Delete
           </Menus.Button>
