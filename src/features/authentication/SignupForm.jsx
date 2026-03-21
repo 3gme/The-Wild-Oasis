@@ -11,7 +11,7 @@ import SpinnerMini from "../../ui/SpinnerMini";
 function SignupForm() {
   const { signup, isPending: isSigningup } = useSignup();
 
-  const { register, formState, getValues, handleSubmit } = useForm();
+  const { register, formState, getValues, handleSubmit, reset } = useForm();
   const { errors } = formState;
 
   function onSubmit(data) {
@@ -78,7 +78,12 @@ function SignupForm() {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset" disabled={isSigningup}>
+        <Button
+          variation="secondary"
+          type="reset"
+          disabled={isSigningup}
+          onClick={reset}
+        >
           Cancel
         </Button>
         <Button disabled={isSigningup}>
