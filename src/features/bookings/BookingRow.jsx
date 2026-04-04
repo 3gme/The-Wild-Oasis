@@ -56,7 +56,6 @@ function BookingRow({
 }) {
   const navigate = useNavigate();
   const { checkout } = useCheckout();
-  const { deleteBooking } = useDeleteBooking();
   const statusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",
